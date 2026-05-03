@@ -1,9 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-if (process.env.NODE_ENV !== 'production') {
-  try { require('dotenv').config(); } catch (e) {}
-}
 
 const app = express();
 
