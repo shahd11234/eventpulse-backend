@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-require('dotenv').config();
+try { require('dotenv').config(); } catch (e) {}
 
 const app = express();
 
@@ -24,9 +24,22 @@ app.use('/api/bookings', bookingRoutes);
 
 // Connect to MongoDB and start server
 const PORT = process.env.PORT || 5000;
-mongoose.connect(process.env.MONGO_URI)
+const MONGO_URI = process.env.MONGO_URI;
+
+console.log('PORT:', PORT);
+console.log('MONGO_URI set:', !!MONGO_URI);
+
+if (!MONGO_URI) {
+  console.error('ERROR: MONGO_URI environment variable is not set');
+  process.exit(1);
+}
+
+mongoose.connect(MONGO_URI)
   .then(() => {
     console.log('MongoDB Connected!');
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
-  .catch(err => console.log(err));
+  .catch(err => {
+    console.error('MongoDB connection error:', err.message);
+    process.exit(1);
+  });
